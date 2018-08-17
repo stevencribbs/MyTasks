@@ -1,0 +1,62 @@
+﻿.app-container {
+    width: 100%;
+    padding: 0;
+    margin: 0
+}
+
+.app {
+    text-align: left;
+}
+
+.app-header {
+    background-color: #03b01b;
+    width: 100%;
+    height: 70px;
+    padding: 0;
+    margin: 0;
+}
+
+.app-header-image {
+    height: 150px;
+}
+
+.app-title {
+    font-size: 42px;
+    font-weight: bold;
+    color: white;
+    padding: 10px 0 10px 10px;
+}
+
+.task-list {
+    border: 1px solid #777;
+    padding: 10px 0;
+}
+
+.task-list-header {
+    font-size: 14px
+}
+
+.task-list-items {
+    list-style-type: none;
+    padding: 0;
+}
+
+.task-a, .task-b{
+    padding: 10px
+}
+
+.task-a {
+    background-color: #fefefe;
+}
+
+.task-b {
+    background-color: #dfdfdf;
+}
+
+.task-msg {
+    font-size: 10px
+}
+
+.task-msg p {
+    padding:0;
+}
