@@ -13,33 +13,129 @@ namespace MyTasksAPI.Controllers
     {
         [HttpGet]
         [Route("allTasks")]
-        public IEnumerable<Task> Get()
+        public IHttpActionResult Get()
         {
             using (TaskDBEntities entities = new TaskDBEntities())
             {
-                return entities.Tasks.ToList();
+                IEnumerable<Task> tasks = entities.Tasks.ToList();
+                if (tasks == null)
+                {
+                    return NotFound();
+                }
+                return Ok(tasks);
             }
         }
 
         [HttpGet]
         [Route("taskById/{id}")]
-        public Task Get(int id)
+        public IHttpActionResult Get(int id)
         {
             using (TaskDBEntities entities = new TaskDBEntities())
             {
-                return entities.Tasks.FirstOrDefault(t => t.ID == id);
+                var task = entities.Tasks.FirstOrDefault(t => t.ID == id);
+
+                if (task == null)
+                {
+                    return NotFound();
+                }
+                return Ok(task);
             }
         }
 
         [HttpGet]
         [Route("tasksByStatus/{status}")]
-        public IEnumerable<Task> GetTasksByStatus(int status)
+        public IHttpActionResult GetTasksByStatus(int status)
         {
             using (TaskDBEntities entities = new TaskDBEntities())
             {
-                return entities.Tasks.Where(t => t.Status == status).ToList();
+                var tasks = entities.Tasks.Where(t => t.Status == status).ToList();
+
+                if (tasks == null)
+                {
+                    return NotFound();
+                }
+                return Ok(tasks);
             }
         }
 
+        [HttpPut]
+        [Route("updateTask/{id}")]
+        public HttpResponseMessage UpdateTask(int id, [FromBody]Task task)
+        {
+            try
+            {
+                using (TaskDBEntities entities = new TaskDBEntities())
+                {
+                    var tsk = entities.Tasks.FirstOrDefault(t => t.ID == id);
+
+                    if (tsk == null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Task with Id = " + id.ToString() + " not found");
+                    }
+
+                    if (task.Data != null) tsk.Data = task.Data;
+                    if (task.Category != null) tsk.Category = task.Category;
+                    if (task.Status != null) tsk.Status = task.Status;
+                    if (task.TaskOrder != null) tsk.TaskOrder = task.TaskOrder;
+                    if (task.Priority != null) tsk.Priority = task.Priority;
+
+                    entities.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK, tsk);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("addTask")]
+        public HttpResponseMessage AddTask([FromBody]Task task)
+        {
+            try
+            {
+                using (TaskDBEntities entities = new TaskDBEntities())
+                {
+                    Task newTask = entities.Tasks.Add(task);
+                    entities.SaveChanges();
+                    var message = Request.CreateResponse(HttpStatusCode.Created, newTask);
+                    message.Headers.Location = new Uri(Request.RequestUri + newTask.ID.ToString());
+                    return message;
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
+
+        [HttpDelete]
+        [Route("deleteTask/{id}")]
+        public HttpResponseMessage DeleteTask(int id)
+        {
+            try
+            {
+                using (TaskDBEntities entities = new TaskDBEntities())
+                {
+
+                    Task tsk = entities.Tasks.FirstOrDefault(t => t.ID == id);
+                    if (tsk == null)
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Task with Id = " + id.ToString() + " not found");
+                    }
+                    else
+                    {
+                        entities.Tasks.Remove(tsk);
+                        entities.SaveChanges();
+                        return Request.CreateResponse(HttpStatusCode.OK);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
     }
 }

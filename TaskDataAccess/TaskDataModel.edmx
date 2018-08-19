@@ -5,8 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="TaskDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'MyTasks.dbo.Tasks' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Tasks">
           <Key>
             <PropertyRef Name="ID" />
@@ -20,17 +18,7 @@ warning 6002: The table/view 'MyTasks.dbo.Tasks' does not have a primary key def
           <Property Name="TaskOrder" Type="int" />
         </EntityType>
         <EntityContainer Name="TaskDBModelStoreContainer">
-          <EntitySet Name="Tasks" EntityType="Self.Tasks" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Tasks].[ID] AS [ID], 
-    [Tasks].[Data] AS [Data], 
-    [Tasks].[Priority] AS [Priority], 
-    [Tasks].[Category] AS [Category], 
-    [Tasks].[Owner] AS [Owner], 
-    [Tasks].[Status] AS [Status], 
-    [Tasks].[TaskOrder] AS [TaskOrder]
-    FROM [dbo].[Tasks] AS [Tasks]</DefiningQuery>
-          </EntitySet>
+          <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
