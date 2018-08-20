@@ -43,12 +43,60 @@ namespace MyTasksAPI.Controllers
         }
 
         [HttpGet]
+        [Route("tasksByOwner/{id}")]
+        public IHttpActionResult GetTasksByOwner(int id)
+        {
+            using (TaskDBEntities entities = new TaskDBEntities())
+            {
+                var tasks = entities.Tasks.Where(t => t.Owner == id).ToList();
+
+                if (tasks == null)
+                {
+                    return NotFound();
+                }
+                return Ok(tasks);
+            }
+        }
+
+        [HttpGet]
+        [Route("tasksByOwnerStatus/{id}")]
+        public IHttpActionResult GetTasksByOwnerAndStatus(int id, int status)
+        {
+            using (TaskDBEntities entities = new TaskDBEntities())
+            {
+                var tasks = entities.Tasks.Where(t => (t.Owner == id) && (t.Status==status)).ToList();
+
+                if (tasks == null)
+                {
+                    return NotFound();
+                }
+                return Ok(tasks);
+            }
+        }
+
+        [HttpGet]
         [Route("tasksByStatus/{status}")]
         public IHttpActionResult GetTasksByStatus(int status)
         {
             using (TaskDBEntities entities = new TaskDBEntities())
             {
                 var tasks = entities.Tasks.Where(t => t.Status == status).ToList();
+
+                if (tasks == null)
+                {
+                    return NotFound();
+                }
+                return Ok(tasks);
+            }
+        }
+
+        [HttpGet]
+        [Route("tasksByStatus/{category}")]
+        public IHttpActionResult GetTasksByCategory(string category)
+        {
+            using (TaskDBEntities entities = new TaskDBEntities())
+            {
+                var tasks = entities.Tasks.Where(t => t.Category == category).ToList();
 
                 if (tasks == null)
                 {
