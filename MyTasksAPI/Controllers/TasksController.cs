@@ -4,13 +4,33 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TaskDataAccess;
 
 namespace MyTasksAPI.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("api/tasks")]
     public class TasksController : ApiController
     {
+        List<Task> mytasks = new List<Task>();
+        
+
+        public TasksController()
+        {
+            Task t1 = new Task();
+            t1.ID = 1;
+            t1.Data = "new task";
+            t1.Status = 0;
+            mytasks.Add(t1);
+
+            Task t2 = new Task();
+            t2.ID = 2;
+            t2.Data = "next new task";
+            t2.Status = 1;
+            mytasks.Add(t2);
+        }
+
         [HttpGet]
         [Route("allTasks")]
         public IHttpActionResult Get()
@@ -24,6 +44,7 @@ namespace MyTasksAPI.Controllers
                 }
                 return Ok(tasks);
             }
+            //return Ok(mytasks.ToList());
         }
 
         [HttpGet]
@@ -91,7 +112,7 @@ namespace MyTasksAPI.Controllers
         }
 
         [HttpGet]
-        [Route("tasksByStatus/{category}")]
+        [Route("tasksByCategory/{category}")]
         public IHttpActionResult GetTasksByCategory(string category)
         {
             using (TaskDBEntities entities = new TaskDBEntities())
